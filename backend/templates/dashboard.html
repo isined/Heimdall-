@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Полигон Нагрузочного Тестирования</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e24;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #2a2a35;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            width: 400px;
+        }
+        h1 {
+            color: #ff4757;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #a4b0be;
+            margin-bottom: 30px;
+        }
+        .btn-attack {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-attack:hover {
+            background-color: #ff6b81;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 71, 87, 0.6);
+        }
+        .btn-attack:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Панель управления</h1>
+    <p>Добро пожаловать в зону тестирования, <span style="color: #7bed9f;">{{ username }}</span>!</p>
+    
+    <button class="btn-attack" id="attackBtn" onclick="startAttack()">АТАКА</button>
+    <script>
+    function startAttack() {
+        const btn = document.getElementById('attackBtn');
+        
+        // Визуально блокируем кнопку, чтобы по ней не кликали дважды во время атаки
+        btn.disabled = true;
+        btn.innerText = "АТАКА ИДЕТ...";
+        btn.style.backgroundColor = "#ff6b81";
+
+        // Отправляем асинхронный запрос на бэкенд FastAPI
+        fetch('/trigger-attack', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                alert("Результат: " + data.message);
+            })
+            .catch(error => {
+                alert("Ошибка при проведении атаки!");
+                console.error(error);
+            })
+            .finally(() => {
+                // Возвращаем кнопку в исходное состояние
+                btn.disabled = false;
+                btn.innerText = "АТАКА";
+                btn.style.backgroundColor = "#ff4757";
+            });
+    }
+    </script>
+</div>
+
+</body>
+</html>
